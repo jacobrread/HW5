@@ -27,6 +27,6 @@ class FoodLocation:
 class Creature:
     def __init__(self, type):
         self.type = type
-        self.can_reproduce = False
+        self.change_to_reproduce = 0.0
         self.is_alive = True
         self.kills = 0

@@ -18,7 +18,8 @@ def Main(args):
         return
     
     num_food = 40
-    results = []
+    totalDoves = []
+    totalHawks = []
 
     # Game loop
     for i in range(0, 100):
@@ -37,7 +38,7 @@ def Main(args):
 
         # Reproduce
         for creature in creatures:
-            if creature.can_reproduce:
+            if random.random() < creature.change_to_reproduce:
                 new_creature = Objects.Creature(creature.type)
                 creatures.append(new_creature)
             
@@ -47,10 +48,20 @@ def Main(args):
             if creature.is_alive:
                 alive_creatures.append(creature)
 
-        results.append(len(alive_creatures))
+        doves = 0
+        hawks = 0
+        for creature in alive_creatures:
+            if creature.type == "Dove":
+                doves += 1
+            else:
+                hawks += 1
+
+        totalDoves.append(doves)
+        totalHawks.append(hawks)
     
     # Graph results
-    plt.plot(results)
+    plt.plot(totalDoves)
+    plt.plot(totalHawks)
     plt.ylabel('Number of Creatures')
     plt.xlabel('Generation')
     plt.show()
@@ -64,39 +75,41 @@ def UpdateCreatures(residents):
     if len(residents) == 2:
         if residents[0].type == "Dove" and residents[1].type == "Hawk":
             residents[0].is_alive = False
-            residents[0].can_reproduce = False
+            residents[0].change_to_reproduce = 0.0
             residents[1].is_alive = True
-            residents[1].can_reproduce = False
+            residents[1].change_to_reproduce = 0.5
         elif residents[0].type == "Hawk" and residents[1].type == "Dove":
             residents[0].is_alive = True
-            residents[0].can_reproduce = False
+            residents[0].change_to_reproduce = 0.5
             residents[1].is_alive = False
-            residents[1].can_reproduce = False
+            residents[1].change_to_reproduce = 0.0
         elif residents[0].type == "Hawk" and residents[1].type == "Hawk":
             if residents[0].kills > residents[1].kills:
                 residents[0].is_alive = True
-                residents[0].can_reproduce = False
+                residents[0].change_to_reproduce = 0.5
+                residents[1].kills += 1
                 residents[1].is_alive = False
-                residents[1].can_reproduce = False
+                residents[1].change_to_reproduce = 0.0
             elif residents[0].kills < residents[1].kills:
                 residents[0].is_alive = False
-                residents[0].can_reproduce = False
+                residents[0].change_to_reproduce = 0.0
                 residents[1].is_alive = True
-                residents[1].can_reproduce = False
+                residents[1].change_to_reproduce = 0.5
+                residents[1].kills += 1
             else:
                 residents[0].is_alive = False
-                residents[0].can_reproduce = False
+                residents[0].change_to_reproduce = 0.0
                 residents[1].is_alive = False
-                residents[1].can_reproduce = False
+                residents[1].change_to_reproduce = 0.0
         else:
             residents[0].is_alive = True
-            residents[0].can_reproduce = False
+            residents[0].change_to_reproduce = 0.0
             residents[1].is_alive = True
-            residents[1].can_reproduce = False
+            residents[1].change_to_reproduce = 0.0
 
     if len(residents) == 1:
         residents[0].is_alive = True
-        residents[0].can_reproduce = True
+        residents[0].change_to_reproduce = 1.0
 
 
 # Recursively places a creature in a random location
@@ -139,12 +152,15 @@ def InitializeCreatures(strategy):
             creature =  Objects.Creature("Dove")
             creatures.append(creature)
     elif strategy == "Hawk":
-        for i in range(0, 6):
-            creature =  Objects.Creature("Hawk")
+        for i in range(0, 5):
+            creature =  Objects.Creature("Dove")
             creatures.append(creature)
+        creatures.append(Objects.Creature("Hawk"))
     else:
         return None
 
     return creatures
+
     
-Main(["Dove"])
+# Main(["Dove"])
+Main(["Hawk"])
