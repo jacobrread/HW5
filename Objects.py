@@ -1,4 +1,4 @@
-# FoodLocation Object
+# Vanilla FoodLocation Object 
 class FoodLocation:
     def __init__(self):
         self.food1 = None
@@ -20,8 +20,19 @@ class FoodLocation:
         if self.food2 != None:
             creatures.append(self.food2)
         return creatures
-
     
+
+# Modified FoodLocation Object
+class VariantFoodLocation:
+    def __init__(self):
+        self.creatures = []
+
+    def AddCreature(self, creature):
+        self.creatures.append(creature)
+
+    def GetCreatures(self):
+        return self.creatures
+
 
 # Creature Object
 class Creature:
